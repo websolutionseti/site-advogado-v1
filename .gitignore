@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+bun.lock
+
+# Build & Cache
+dist/
+build/
+coverage/
+.cache/
+*.log
+
+# Environment & Secrets (Zero Senhas / Zero Tokens)
+.env*
+*.key
+*.pem
+*.secret
+*.credential*
+
+# Pastas e Arquivos Ocultos (.nome e .arquivo)
+.*
+!.gitignore
+
+# Documentos, PRD e Arquivos Markdown (exceto README.md raiz)
+*.md
+!README.md
+docs/
+PRD*
+PRD*/*
+conteudo_extraido/md/
+conteudo_extraido/README_MIGRACAO.md
+
+# Scripts internos de extração e pacotes zip
+scripts/
+*.py
+*.zip
+
+# Backups e Imagens Temporárias Locais da Raiz
+9router-backup*
+Cartes-Advogados-*.png
+Cartes_Advogados-*.png
+Thumbs.db
+.DS_Store

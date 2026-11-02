@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+:root {
+  /* Canvas Noturno & Azul Petróleo Fiduciário */
+  --cartes-canvas-bg: #060D17;
+  --cartes-petrol-deep: #0B192C;
+  --cartes-petrol-surface: #0D2538;
+  --cartes-petrol-elevated: #132F4C;
+
+  /* Acentos Fiduciários: Dourado & Champagne */
+  --cartes-gold-noble: #C5A059;
+  --cartes-gold-bright: #D4AF37;
+  --cartes-gold-champagne: #E7D3A6;
+  --cartes-gold-border: rgba(197, 160, 89, 0.2);
+
+  /* Tons de Precisão Técnica: Prata Nobre & Silver Mist */
+  --cartes-silver-noble: #94A3B8;
+  --cartes-silver-light: #CBD5E1;
+  --cartes-silver-muted: #64748B;
+
+  /* Tipografia & Leitura Contínua */
+  --cartes-text-primary: #F8FAFC;
+  --cartes-text-secondary: #E2E8F0;
+  --cartes-text-muted: #94A3B8;
+}
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    color: var(--cartes-text-secondary);
+    background-color: var(--cartes-canvas-bg);
+  }
+
+  h1, h2, h3, .font-serif-legal {
+    font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+    letter-spacing: -0.01em;
+  }
+
+  .font-brand {
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.12em;
+  }
+
+  .font-playfair {
+    font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.01em;
+  }
+
+  .font-inter {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0b111e;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}

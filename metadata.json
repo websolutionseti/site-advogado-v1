@@ -1,0 +1,6 @@
+{
+  "name": "Cartes Advogados — MVP v1.0",
+  "description": "Plataforma jurídica de alta performance com diagnóstico preliminar de casos, CMS de artigos e integração de automação n8n para Cartes Advogados.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
