@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { HomePage } from './components/HomePage';
 import { QuemSomosPage } from './components/QuemSomosPage';
@@ -11,23 +11,52 @@ import { PracticeAreas } from './components/PracticeAreas';
 import { EquipeFluentPage } from './components/EquipeFluentPage';
 import { ArticlesCMS } from './components/ArticlesCMS';
 import { ContatoPage } from './components/ContatoPage';
-import { PRDViewerModal } from './components/PRDViewerModal';
-import { ExtractionDownloadModal } from './components/ExtractionDownloadModal';
-import { StyleGuideModal } from './components/StyleGuideModal';
+import { DocumentationPage } from './components/DocumentationPage';
 import { CartesLayout } from './components/CartesLayout';
-import { NavigationPage, ConsultationLead, N8nWebhookExecution } from './types';
-import { INITIAL_N8N_LOGS } from './data/mockData';
+import { NavigationPage } from './types';
+
+// Helper para detectar rota oculta via path ou hash
+const detectHiddenRoute = (): NavigationPage => {
+  if (typeof window === 'undefined') return 'home';
+  const path = window.location.pathname.toLowerCase();
+  const hash = window.location.hash.toLowerCase();
+  if (path === '/doc' || path === '/anexo' || hash === '#doc' || hash === '#anexo') {
+    return 'doc';
+  }
+  return 'home';
+};
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<NavigationPage>('home');
-  const [isPRDOpen, setIsPRDOpen] = useState(false);
-  const [isExtractionOpen, setIsExtractionOpen] = useState(false);
-  const [isStyleGuideOpen, setIsStyleGuideOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState<NavigationPage>(detectHiddenRoute);
   const [selectedAreaForIntake, setSelectedAreaForIntake] = useState<string>('patrimonial-sucessorio');
-  const [n8nExecutions, setN8nExecutions] = useState<N8nWebhookExecution[]>(INITIAL_N8N_LOGS);
+
+  // Monitorar alterações na URL/Hash para abrir a página oculta /doc ou voltar
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const detected = detectHiddenRoute();
+      if (detected === 'doc') {
+        setCurrentPage('doc');
+      }
+    };
+
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+    };
+  }, []);
 
   const handleNavigate = (page: NavigationPage) => {
     setCurrentPage(page);
+    if (page === 'doc') {
+      window.location.hash = '#doc';
+    } else {
+      if (window.location.hash === '#doc' || window.location.hash === '#anexo') {
+        window.history.pushState(null, '', '/');
+      }
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -36,30 +65,30 @@ export default function App() {
     handleNavigate('contato');
   };
 
+  // ROTA OCULTA /doc ou /anexo: Painel de Engenharia, Design System e Governança WUXIA-OPS
+  if (currentPage === 'doc' || currentPage === 'anexo') {
+    return <DocumentationPage onNavigate={handleNavigate} />;
+  }
+
+  // SITE PÚBLICO OFICIAL: Limpo, nobre e fiduciário (Sem botões de desenvolvimento na visão pública)
   return (
     <CartesLayout
-      onOpenPRD={() => setIsPRDOpen(true)}
-      onOpenExtraction={() => setIsExtractionOpen(true)}
       onOpenIntake={() => handleNavigate('contato')}
       onNavigate={handleNavigate}
     >
-      {/* 1. Header Global com TopBar Executiva & Menu das 6 Páginas */}
+      {/* 1. Header Global com TopBar Limpa e Fiduciária */}
       <Navbar
         currentPage={currentPage}
         onNavigate={handleNavigate}
-        onOpenPRD={() => setIsPRDOpen(true)}
-        onOpenExtraction={() => setIsExtractionOpen(true)}
         onOpenIntake={() => handleNavigate('contato')}
-        onOpenStyleGuide={() => setIsStyleGuideOpen(true)}
       />
 
-      {/* 2. Conteúdo da Página Ativa (Páginas Totalmente Dedicadas) */}
+      {/* 2. Conteúdo da Página Ativa */}
       <div className="flex-1">
         {/* P01: HOME (Institucional Corporativo Amplo com Quiet Luxury) */}
         {currentPage === 'home' && (
           <HomePage
             onNavigate={handleNavigate}
-            onOpenPRD={() => setIsPRDOpen(true)}
           />
         )}
 
@@ -84,8 +113,6 @@ export default function App() {
           <EquipeFluentPage
             onNavigate={handleNavigate}
             onOpenIntake={() => handleNavigate('contato')}
-            onOpenPRD={() => setIsPRDOpen(true)}
-            onOpenExtraction={() => setIsExtractionOpen(true)}
             hideHeader={true}
             hideFooter={true}
           />
@@ -107,22 +134,6 @@ export default function App() {
           />
         )}
       </div>
-
-      {/* 3. Modais Auxiliares para Documentação, Design System e Extração */}
-      <PRDViewerModal
-        isOpen={isPRDOpen}
-        onClose={() => setIsPRDOpen(false)}
-      />
-
-      <ExtractionDownloadModal
-        isOpen={isExtractionOpen}
-        onClose={() => setIsExtractionOpen(false)}
-      />
-
-      <StyleGuideModal
-        isOpen={isStyleGuideOpen}
-        onClose={() => setIsStyleGuideOpen(false)}
-      />
     </CartesLayout>
   );
 }

@@ -62,9 +62,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           <div className="flex items-center space-x-4">
-            <span className="inline-flex items-center px-2 py-0.5 rounded-none text-[10px] uppercase font-semibold bg-[#1A1E24] text-[#C5A880] border border-[#C5A880]/30">
-              <ShieldCheck className="h-3 w-3 mr-1.5 text-[#C5A880]" />
-              RCS Verificado (Google Business)
+            <span className="text-[11px] text-[#94A3B8] font-medium tracking-wide">
+              Atendimento Fiduciário & Sigiloso
             </span>
             <span className="text-neutral-700">|</span>
             
@@ -90,32 +89,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 Instagram
               </a>
             </div>
-
-            {onOpenStyleGuide && (
-              <>
-                <span className="text-neutral-700">|</span>
-                <button
-                  type="button"
-                  onClick={onOpenStyleGuide}
-                  className="text-[10px] uppercase tracking-wider text-[#C5A059] hover:text-white transition-colors cursor-pointer flex items-center gap-1 font-semibold"
-                >
-                  <span>🎨 Design System & Cores</span>
-                </button>
-              </>
-            )}
-
-            {onOpenPRD && (
-              <>
-                <span className="text-neutral-700">|</span>
-                <button
-                  type="button"
-                  onClick={onOpenPRD}
-                  className="text-[10px] uppercase tracking-wider text-[#C5A880] hover:text-white transition-colors cursor-pointer"
-                >
-                  PRD v1.0
-                </button>
-              </>
-            )}
           </div>
 
         </div>

@@ -216,15 +216,15 @@ export const Footer: React.FC<FooterProps> = ({
           </div>
 
           {/* ----------------------------------------------------------------- */}
-          {/* COLUNA 4: Acesso Rápido & Diagnóstico Preliminar */}
+          {/* COLUNA 4: Atendimento Institucional & Consulta */}
           {/* ----------------------------------------------------------------- */}
           <div className="flex flex-col space-y-4 text-left">
             <h3 className="text-xs font-bold tracking-[0.2em] uppercase text-[#8E95A0] border-b border-[#2A2A2A] pb-2">
-              DIAGNÓSTICO & FERRAMENTAS
+              ATENDIMENTO & CONSULTORIA
             </h3>
 
             <p className="text-xs text-[#8E95A0] leading-relaxed">
-              Inicie seu atendimento preventivo ou consulte a documentação técnica do portal institucional:
+              Agende uma consulta presencial reservada em nossas sedes na Av. Paulista ou via videoconferência segura:
             </p>
 
             <div className="flex flex-col space-y-2.5">
@@ -232,36 +232,10 @@ export const Footer: React.FC<FooterProps> = ({
                 type="button"
                 onClick={onOpenIntake}
                 data-track="footer_btn_triagem"
-                className="w-full flex items-center justify-between rounded-sm border border-[#C5A880] bg-[#C5A880]/10 px-3.5 py-2.5 text-xs text-[#F9F9F8] hover:bg-[#C5A880] hover:text-[#1C1C1C] transition-all font-semibold cursor-pointer"
+                className="w-full flex items-center justify-between rounded-sm border border-[#C5A880] bg-[#C5A880]/10 px-3.5 py-3 text-xs text-[#F9F9F8] hover:bg-[#C5A880] hover:text-[#1C1C1C] transition-all font-semibold cursor-pointer shadow-sm"
               >
-                <span>Triagem & Agendamento</span>
+                <span>Agendar Consulta Fiduciária</span>
                 <span className="text-[#C5A880] group-hover:text-[#1C1C1C]">→</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={onOpenPRD}
-                data-track="footer_btn_prd"
-                className="w-full flex items-center justify-between rounded-sm border border-[#333333] bg-[#222222] px-3.5 py-2 text-xs text-[#8E95A0] hover:border-[#C5A880]/50 hover:text-[#F9F9F8] transition-colors cursor-pointer"
-              >
-                <span className="flex items-center gap-2">
-                  <FileText className="h-3.5 w-3.5 text-[#C5A880]" />
-                  <span>Documento PRD v1.0</span>
-                </span>
-                <span className="text-[10px] text-[#8E95A0]">PDF/MD</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={onOpenExtraction}
-                data-track="footer_btn_extracao"
-                className="w-full flex items-center justify-between rounded-sm border border-emerald-900/40 bg-emerald-950/20 px-3.5 py-2 text-xs text-emerald-300 hover:bg-emerald-900/30 transition-colors cursor-pointer"
-              >
-                <span className="flex items-center gap-2">
-                  <FolderDown className="h-3.5 w-3.5 text-emerald-400" />
-                  <span>Drive de Conteúdos (.md/.docx)</span>
-                </span>
-                <span className="text-[10px] text-emerald-400">Export</span>
               </button>
             </div>
 
