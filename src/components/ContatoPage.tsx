@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   MapPin, 
   Phone, 
@@ -10,9 +10,11 @@ import {
   CheckCircle2, 
   Lock,
   Calendar,
-  HelpCircle
+  HelpCircle,
+  Sparkles
 } from 'lucide-react';
 import { NavigationPage } from '../types';
+import { getLeadCache, saveLeadCache } from '../services/leadCache';
 
 interface ContatoPageProps {
   onNavigate: (page: NavigationPage) => void;
@@ -24,10 +26,29 @@ export const ContatoPage: React.FC<ContatoPageProps> = ({ onNavigate }) => {
   const [area, setArea] = useState('Planejamento Patrimonial e Sucessório');
   const [mensagem, setMensagem] = useState('');
   const [enviado, setEnviado] = useState(false);
+  const [isFromCache, setIsFromCache] = useState(false);
+
+  useEffect(() => {
+    const cached = getLeadCache();
+    if (cached.contactName || cached.email || cached.phone) {
+      if (cached.contactName) setNome(cached.contactName);
+      if (cached.phone || cached.email) setContato(cached.phone || cached.email || '');
+      setIsFromCache(true);
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!nome || !contato) return;
+
+    // Salvar no cache e sincronizar com Chatwoot
+    const isEmail = contato.includes('@');
+    saveLeadCache({
+      contactName: nome,
+      email: isEmail ? contato : undefined,
+      phone: !isEmail ? contato : undefined,
+      source: 'contact_page'
+    });
 
     // Constrói mensagem direta para o WhatsApp oficial
     const textoWhatsApp = encodeURIComponent(

@@ -66,3 +66,47 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
+
+/* ==========================================================================
+   ANIMAÇÃO FIDUCIÁRIA CTA: Ponto Azul Piscando com Brilho Branco Constante
+   Velocidade uniforme e constante (1.5s linear infinite)
+   ========================================================================== */
+@keyframes pulse-blue-glow-white {
+  0% {
+    background-color: #00A3FF;
+    box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.95), 0 0 14px 4px rgba(0, 163, 255, 0.75);
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    background-color: #38BDF8;
+    box-shadow: 0 0 12px 4px rgba(255, 255, 255, 1), 0 0 24px 8px rgba(0, 163, 255, 0.9);
+    transform: scale(1.18);
+    opacity: 0.92;
+  }
+  100% {
+    background-color: #00A3FF;
+    box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.95), 0 0 14px 4px rgba(0, 163, 255, 0.75);
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-pulse-blue-glow {
+  animation: pulse-blue-glow-white 1.5s linear infinite;
+}
+
+/* Efeito de aura sutil para o botão CTA */
+@keyframes cta-subtle-glow {
+  0%, 100% {
+    box-shadow: 0 8px 24px -4px rgba(37, 211, 102, 0.35), 0 0 15px 1px rgba(0, 163, 255, 0.25);
+  }
+  50% {
+    box-shadow: 0 12px 30px -4px rgba(37, 211, 102, 0.5), 0 0 25px 3px rgba(0, 163, 255, 0.45);
+  }
+}
+
+.animate-cta-glow {
+  animation: cta-subtle-glow 2.5s ease-in-out infinite;
+}
+

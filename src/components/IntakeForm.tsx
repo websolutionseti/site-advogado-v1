@@ -12,10 +12,12 @@ import {
   ArrowLeft,
   FileCheck2,
   ExternalLink,
-  ShieldCheck
+  ShieldCheck,
+  Sparkles
 } from 'lucide-react';
 import { ConsultationLead } from '../types';
 import { PRACTICE_AREAS } from '../data/mockData';
+import { getLeadCache, saveLeadCache } from '../services/leadCache';
 
 interface IntakeFormProps {
   initialAreaId?: string;
@@ -50,6 +52,35 @@ export const IntakeForm: React.FC<IntakeFormProps> = ({
 
   const [submittedLead, setSubmittedLead] = useState<ConsultationLead | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [isFromCache, setIsFromCache] = useState(false);
+
+  // Carregar dados de cache (Chatwoot / sessões anteriores)
+  useEffect(() => {
+    const cached = getLeadCache();
+    if (cached.contactName || cached.email || cached.phone || cached.companyName) {
+      if (cached.contactName) setContactName(cached.contactName);
+      if (cached.email) setEmail(cached.email);
+      if (cached.phone) setPhone(cached.phone);
+      if (cached.companyName) setCompanyName(cached.companyName);
+      setIsFromCache(true);
+    }
+
+    // Ouvir atualizações de cache emitidas pelo Chatwoot
+    const handleCacheUpdated = (e: any) => {
+      const data = e.detail;
+      if (data) {
+        if (data.contactName) setContactName(data.contactName);
+        if (data.email) setEmail(data.email);
+        if (data.phone) setPhone(data.phone);
+        if (data.companyName) setCompanyName(data.companyName);
+        setIsFromCache(true);
+      }
+    };
+
+    window.addEventListener('cartes:lead-cache-updated', handleCacheUpdated);
+    return () => window.removeEventListener('cartes:lead-cache-updated', handleCacheUpdated);
+  }, []);
 
   useEffect(() => {
     if (initialAreaId) {
@@ -109,6 +140,15 @@ export const IntakeForm: React.FC<IntakeFormProps> = ({
     };
 
     setTimeout(() => {
+      // Salvar no cache e sincronizar com Chatwoot
+      saveLeadCache({
+        contactName,
+        email,
+        phone,
+        companyName: clientType === 'PJ' ? companyName : undefined,
+        source: 'intake_form'
+      });
+
       setIsSubmitting(false);
       setSubmittedLead(lead);
       onLeadSubmitted(lead);
@@ -507,6 +547,16 @@ export const IntakeForm: React.FC<IntakeFormProps> = ({
               {/* STEP 4: Contato & Agendamento */}
               {step === 4 && (
                 <div className="space-y-6">
+                  {/* Banner de Dados Recuperados de Sessão / Chatwoot */}
+                  {isFromCache && (
+                    <div className="flex items-center gap-2 rounded-sm border border-sky-500/30 bg-sky-950/20 px-3.5 py-2.5 text-xs text-sky-300">
+                      <Sparkles className="h-4 w-4 shrink-0 text-sky-400" />
+                      <span>
+                        Dados de contato pré-identificados via atendimento prévio (Chatwoot / Portal).
+                      </span>
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <div className="sm:col-span-2">
                       <label className="block text-xs font-medium text-slate-300">

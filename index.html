@@ -39,15 +39,29 @@
   <body class="bg-[#060D17] text-slate-100 antialiased selection:bg-[#C5A059]/30 selection:text-white">
     <div id="root"></div>
 
-    <!-- 
-      ==========================================================================
-      [PONTO DE INJEÇÃO 3: CHATWOOT LIVE CHAT WIDGET]
-      Governança: Inicializado via src/services/visitorTracking.ts
-      Para habilitar em produção via ENV:
-        VITE_CHATWOOT_BASE_URL="https://chat.online.des.br"
-        VITE_CHATWOOT_TOKEN="SEU_TOKEN_CHATWOOT"
-      ==========================================================================
-    -->
+    <!-- Configuração e Injeção do Chatwoot Live Chat SDK -->
+    <script>
+      window.chatwootSettings = {
+        hideMessageBubble: true, // Oculta a bolha padrão para integração perfeita com o CTA duplo exclusivo
+        position: 'right',
+        locale: 'pt-BR',
+        type: 'standard'
+      };
+
+      (function(d,t) {
+        var BASE_URL="https://chat.online.des.br";
+        var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+        g.src=BASE_URL+"/packs/js/sdk.js";
+        g.async = true;
+        s.parentNode.insertBefore(g,s);
+        g.onload=function(){
+          window.chatwootSDK.run({
+            websiteToken: 'KKoEhfthVd1GPBK9wz5VtXtW',
+            baseUrl: BASE_URL
+          })
+        }
+      })(document,"script");
+    </script>
 
     <script type="module" src="/src/main.tsx"></script>
   </body>
