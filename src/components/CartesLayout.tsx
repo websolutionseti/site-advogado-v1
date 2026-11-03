@@ -68,11 +68,8 @@ declare global {
   }
 }
 
-// Configurações de ambiente opcionais (fallback seguro)
-const GA_MEASUREMENT_ID = (import.meta as any).env?.VITE_GA_ID || '';
-const CLARITY_PROJECT_ID = (import.meta as any).env?.VITE_CLARITY_ID || '';
-const CHATWOOT_BASE_URL = (import.meta as any).env?.VITE_CHATWOOT_BASE_URL || '';
-const CHATWOOT_WEBSITE_TOKEN = (import.meta as any).env?.VITE_CHATWOOT_TOKEN || '';
+// Configurações de ambiente (VITE_GA_ID, VITE_CLARITY_ID, VITE_CHATWOOT_*)
+// são lidas em src/services/scriptLoader.ts.
 
 import { NavigationPage } from '../types';
 
@@ -98,59 +95,10 @@ export const CartesLayout: React.FC<CartesLayoutProps> = ({
   useEffect(() => {
     initChatwootCacheSync();
 
-    // 1. Injeção dinâmica opcional de GA4 se configurado em ambiente
-    if (GA_MEASUREMENT_ID && !document.getElementById('ga-gtag-script')) {
-      const gaScript = document.createElement('script');
-      gaScript.id = 'ga-gtag-script';
-      gaScript.async = true;
-      gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
-      document.head.appendChild(gaScript);
+    // Scripts de terceiros (GA4, Clarity, Chatwoot) são injetados EXCLUSIVAMENTE
+    // via src/services/scriptLoader.ts, condicionados ao consentimento LGPD.
 
-      const gaInit = document.createElement('script');
-      gaInit.id = 'ga-init-script';
-      gaInit.innerHTML = `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '${GA_MEASUREMENT_ID}', { send_page_view: true });
-      `;
-      document.head.appendChild(gaInit);
-    }
-
-    // 2. Injeção dinâmica opcional de Clarity se configurado
-    if (CLARITY_PROJECT_ID && !document.getElementById('clarity-script')) {
-      const clarityScript = document.createElement('script');
-      clarityScript.id = 'clarity-script';
-      clarityScript.type = 'text/javascript';
-      clarityScript.innerHTML = `
-        (function(c,l,a,r,i,t,y){
-          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "${CLARITY_PROJECT_ID}");
-      `;
-      document.head.appendChild(clarityScript);
-    }
-
-    // 3. Injeção dinâmica de Chatwoot se configurado
-    if (CHATWOOT_BASE_URL && CHATWOOT_WEBSITE_TOKEN && !document.getElementById('chatwoot-script')) {
-      const chatwootScript = document.createElement('script');
-      chatwootScript.id = 'chatwoot-script';
-      chatwootScript.async = true;
-      chatwootScript.defer = true;
-      chatwootScript.src = `${CHATWOOT_BASE_URL}/packs/js/sdk.js`;
-      chatwootScript.onload = () => {
-        if (window.chatwootSDK) {
-          window.chatwootSDK.run({
-            websiteToken: CHATWOOT_WEBSITE_TOKEN,
-            baseUrl: CHATWOOT_BASE_URL,
-          });
-        }
-      };
-      document.body.appendChild(chatwootScript);
-    }
-
-    // 4. Captura universal e desacoplada de cliques com [data-track]
+    // Captura universal e desacoplada de cliques com [data-track]
     const handleGlobalClick = (event: MouseEvent) => {
       const target = (event.target as HTMLElement)?.closest('[data-track]');
       if (!target) return;

@@ -14,7 +14,8 @@ import {
   Lock, 
   ArrowLeft,
   CheckCircle2,
-  AlertTriangle
+  AlertTriangle,
+  Eye
 } from 'lucide-react';
 import { NavigationPage } from '../types';
 

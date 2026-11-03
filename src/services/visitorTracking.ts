@@ -6,6 +6,8 @@
  * Rastreamento de Origem, UTMs, Detecção de IP e Auditoria de Acesso
  */
 
+import { loadChatwoot, loadClarity, loadGoogleAnalytics } from './scriptLoader';
+
 export interface VisitorSession {
   ip: string;
   referrer: string;
@@ -140,9 +142,28 @@ export const initVisitorTracking = async (currentPage: string): Promise<VisitorS
     lastVisitedPage: currentPage
   };
 
+  if (consent !== 'granted') {
+    // LGPD (minimização): IP é dado pessoal — só consultamos API de terceiros após consentimento
+    newSession.ip = 'Não coletado (aguardando consentimento)';
+  }
   saveSession(newSession);
 
-  // Consulta assíncrona e não-bloqueante do IP com timeout seguro de 3 segundos
+  if (consent === 'granted') {
+    await resolveVisitorIp();
+  }
+
+  return getStoredSession() || newSession;
+};
+
+/**
+ * Consulta assíncrona e não-bloqueante do IP (timeout de 3s).
+ * Executada SOMENTE com consentimento 'granted'.
+ */
+const resolveVisitorIp = async () => {
+  if (typeof window === 'undefined' || getStoredConsent() !== 'granted') return;
+  const session = getStoredSession();
+  if (!session) return;
+
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
@@ -150,61 +171,25 @@ export const initVisitorTracking = async (currentPage: string): Promise<VisitorS
     clearTimeout(timeoutId);
     if (res.ok) {
       const data = await res.json();
-      newSession.ip = data.ip || 'IP Oculto/Proxy';
-      saveSession(newSession);
+      session.ip = typeof data.ip === 'string' ? data.ip : 'IP Oculto/Proxy';
     }
   } catch {
-    newSession.ip = 'Cloudflare Edge Proxy';
-    saveSession(newSession);
+    session.ip = 'Indisponível (bloqueado/proxy)';
   }
-
-  return newSession;
+  saveSession(session);
 };
 
 /**
  * Injeção controlada de scripts com respeito à LGPD/GDPR
  * Só executa após consentimento 'granted'
+ * Fonte única: delega para src/services/scriptLoader.ts
  */
 export const initializeApprovedScripts = () => {
   if (typeof window === 'undefined') return;
-  const consent = getStoredConsent();
-  if (consent !== 'granted') return;
+  if (getStoredConsent() !== 'granted') return;
 
-  const env = (import.meta as any).env || {};
-
-  // 1. Microsoft Clarity
-  const clarityId = env.VITE_CLARITY_ID;
-  if (clarityId && !document.getElementById('clarity-script')) {
-    const s = document.createElement('script');
-    s.id = 'clarity-script';
-    s.type = 'text/javascript';
-    s.innerHTML = `
-      (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-      })(window, document, "clarity", "script", "${clarityId}");
-    `;
-    document.head.appendChild(s);
-  }
-
-  // 2. Chatwoot Live Chat
-  const chatwootBase = env.VITE_CHATWOOT_BASE_URL;
-  const chatwootToken = env.VITE_CHATWOOT_TOKEN;
-  if (chatwootBase && chatwootToken && !document.getElementById('chatwoot-script')) {
-    const s = document.createElement('script');
-    s.id = 'chatwoot-script';
-    s.async = true;
-    s.defer = true;
-    s.src = `${chatwootBase}/packs/js/sdk.js`;
-    s.onload = () => {
-      if ((window as any).chatwootSDK) {
-        (window as any).chatwootSDK.run({
-          websiteToken: chatwootToken,
-          baseUrl: chatwootBase
-        });
-      }
-    };
-    document.body.appendChild(s);
-  }
+  loadGoogleAnalytics();
+  loadClarity();
+  void loadChatwoot();
+  void resolveVisitorIp();
 };

@@ -19,6 +19,8 @@ coverage/
 # Pastas e Arquivos Ocultos (.nome e .arquivo)
 .*
 !.gitignore
+!.github/
+!.github/**
 
 # Documentos, PRD e Arquivos Markdown (exceto README.md raiz)
 *.md

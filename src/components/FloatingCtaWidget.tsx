@@ -13,6 +13,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, ShieldCheck, X, Sparkles } from 'lucide-react';
+import { openChatwoot } from '../services/scriptLoader';
 
 interface FloatingCtaWidgetProps {
   onOpenIntake?: () => void;
@@ -73,28 +74,18 @@ export const FloatingCtaWidget: React.FC<FloatingCtaWidgetProps> = ({ onOpenInta
     setIsOpen(prev => !prev);
   };
 
-  // Abrir Chatwoot Live Chat
-  const handleOpenChatwoot = (e: React.MouseEvent) => {
+  // Abrir Chatwoot Live Chat (sob demanda com fallback)
+  const handleOpenChatwoot = async (e: React.MouseEvent) => {
     e.preventDefault();
     setIsOpen(false);
 
-    const win = window as any;
-    if (win.$chatwoot && typeof win.$chatwoot.toggle === 'function') {
-      win.$chatwoot.toggle('open');
-    } else if (win.chatwootSDK && typeof win.chatwootSDK.run === 'function') {
-      win.chatwootSDK.run({
-        websiteToken: 'KKoEhfthVd1GPBK9wz5VtXtW',
-        baseUrl: 'https://chat.online.des.br'
-      });
-      setTimeout(() => {
-        if (win.$chatwoot) win.$chatwoot.toggle('open');
-      }, 500);
-    } else {
-      // Fallback amigável se script externo for bloqueado por adblock
+    const opened = await openChatwoot();
+    if (!opened) {
+      // Fallback gracioso se bloqueado por adblocker ou rede
       if (onOpenIntake) {
         onOpenIntake();
       } else {
-        window.open(WHATSAPP_URL, '_blank');
+        window.open(WHATSAPP_URL, '_blank', 'noopener,noreferrer');
       }
     }
   };
