@@ -1,4 +1,4 @@
-export type NavigationPage = 'home' | 'quem-somos' | 'atuacao' | 'equipe' | 'blog' | 'contato' | 'doc' | 'anexo';
+export type NavigationPage = 'home' | 'quem-somos' | 'atuacao' | 'equipe' | 'blog' | 'contato' | 'doc' | 'anexo' | 'privacidade' | 'termos';
 
 export interface PracticeArea {
   id: string;

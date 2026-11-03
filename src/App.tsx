@@ -12,31 +12,50 @@ import { EquipeFluentPage } from './components/EquipeFluentPage';
 import { ArticlesCMS } from './components/ArticlesCMS';
 import { ContatoPage } from './components/ContatoPage';
 import { DocumentationPage } from './components/DocumentationPage';
+import { PoliticaPrivacidadePage } from './components/PoliticaPrivacidadePage';
+import { TermosUsoPage } from './components/TermosUsoPage';
+import { CookieConsentBanner } from './components/CookieConsentBanner';
 import { CartesLayout } from './components/CartesLayout';
 import { NavigationPage } from './types';
+import { initVisitorTracking, initializeApprovedScripts } from './services/visitorTracking';
 
-// Helper para detectar rota oculta via path ou hash
-const detectHiddenRoute = (): NavigationPage => {
+// Helper para detectar rota ativa via path ou hash
+const detectRouteFromUrl = (): NavigationPage => {
   if (typeof window === 'undefined') return 'home';
   const path = window.location.pathname.toLowerCase();
   const hash = window.location.hash.toLowerCase();
+
+  // Rotas Ocultas de Engenharia
   if (path === '/doc' || path === '/anexo' || hash === '#doc' || hash === '#anexo') {
     return 'doc';
   }
+
+  // Rotas Oficiais de Governança
+  if (path === '/privacidade' || hash === '#privacidade') {
+    return 'privacidade';
+  }
+  if (path === '/termos' || hash === '#termos') {
+    return 'termos';
+  }
+
   return 'home';
 };
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<NavigationPage>(detectHiddenRoute);
+  const [currentPage, setCurrentPage] = useState<NavigationPage>(detectRouteFromUrl);
   const [selectedAreaForIntake, setSelectedAreaForIntake] = useState<string>('patrimonial-sucessorio');
 
-  // Monitorar alterações na URL/Hash para abrir a página oculta /doc ou voltar
+  // Inicialização de telemetria e rastreamento de consentimento LGPD
+  useEffect(() => {
+    initVisitorTracking(currentPage);
+    initializeApprovedScripts();
+  }, [currentPage]);
+
+  // Monitorar alterações na URL/Hash para navegação fluida
   useEffect(() => {
     const handleUrlChange = () => {
-      const detected = detectHiddenRoute();
-      if (detected === 'doc') {
-        setCurrentPage('doc');
-      }
+      const detected = detectRouteFromUrl();
+      setCurrentPage(detected);
     };
 
     window.addEventListener('popstate', handleUrlChange);
@@ -52,8 +71,12 @@ export default function App() {
     setCurrentPage(page);
     if (page === 'doc') {
       window.location.hash = '#doc';
+    } else if (page === 'privacidade') {
+      window.location.hash = '#privacidade';
+    } else if (page === 'termos') {
+      window.location.hash = '#termos';
     } else {
-      if (window.location.hash === '#doc' || window.location.hash === '#anexo') {
+      if (['#doc', '#anexo', '#privacidade', '#termos'].includes(window.location.hash)) {
         window.history.pushState(null, '', '/');
       }
     }
@@ -70,7 +93,7 @@ export default function App() {
     return <DocumentationPage onNavigate={handleNavigate} />;
   }
 
-  // SITE PÚBLICO OFICIAL: Limpo, nobre e fiduciário (Sem botões de desenvolvimento na visão pública)
+  // SITE PÚBLICO OFICIAL: Limpo, nobre e fiduciário
   return (
     <CartesLayout
       onOpenIntake={() => handleNavigate('contato')}
@@ -133,7 +156,24 @@ export default function App() {
             onNavigate={handleNavigate}
           />
         )}
+
+        {/* PÁGINA DEDICADA: POLÍTICA DE PRIVACIDADE & LGPD */}
+        {currentPage === 'privacidade' && (
+          <PoliticaPrivacidadePage
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* PÁGINA DEDICADA: TERMOS DE USO INSTITUCIONAIS */}
+        {currentPage === 'termos' && (
+          <TermosUsoPage
+            onNavigate={handleNavigate}
+          />
+        )}
       </div>
+
+      {/* Banner de Gestão de Cookies e Consentimento LGPD/GDPR */}
+      <CookieConsentBanner onNavigate={handleNavigate} />
     </CartesLayout>
   );
 }

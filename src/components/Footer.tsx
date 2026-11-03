@@ -268,23 +268,23 @@ export const Footer: React.FC<FooterProps> = ({
             © 2026 Cartes Advogados. Todos os direitos reservados.
           </p>
 
-          {/* Links Legais */}
+          {/* Links Legais com Páginas Dedicadas */}
           <div className="flex flex-wrap items-center justify-center space-x-6 text-xs">
-            <a 
-              href="#privacidade" 
-              onClick={(e) => { e.preventDefault(); alert("Política de Privacidade & LGPD: Todos os dados coletados são tratados em estrita observância à Lei Geral de Proteção de Dados (Lei nº 13.709/2018) e ao sigilo profissional advogado-cliente."); }}
-              className="hover:text-[#F9F9F8] transition-colors"
+            <button 
+              type="button"
+              onClick={() => onNavigate ? onNavigate('privacidade') : null}
+              className="hover:text-[#C5A880] transition-colors cursor-pointer"
             >
               Política de Privacidade
-            </a>
+            </button>
             <span>|</span>
-            <a 
-              href="#termos" 
-              onClick={(e) => { e.preventDefault(); alert("Termos de Uso: Este portal tem propósito estritamente institucional e informativo, em consonância com as normas éticas da OAB (Provimento nº 205/2021)."); }}
-              className="hover:text-[#F9F9F8] transition-colors"
+            <button 
+              type="button"
+              onClick={() => onNavigate ? onNavigate('termos') : null}
+              className="hover:text-[#C5A880] transition-colors cursor-pointer"
             >
               Termos de Uso
-            </a>
+            </button>
           </div>
 
           {/* OAB Responsável */}

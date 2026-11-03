@@ -31,8 +31,10 @@ interface ColorToken {
   textColor: string;
 }
 
+import { getStoredSession } from '../services/visitorTracking';
+
 export const DocumentationPage: React.FC<DocumentationPageProps> = ({ onNavigate }) => {
-  const [activeTab, setActiveTab] = useState<'design' | 'audios' | 'prd' | 'security' | 'downloads'>('design');
+  const [activeTab, setActiveTab] = useState<'design' | 'audios' | 'prd' | 'security' | 'downloads' | 'telemetry'>('design');
   const [copiedHex, setCopiedHex] = useState<string | null>(null);
 
   // Injetar meta tag noindex, nofollow para ocultar de motores de busca
@@ -262,6 +264,18 @@ export const DocumentationPage: React.FC<DocumentationPageProps> = ({ onNavigate
           >
             <FolderDown className="h-3.5 w-3.5 text-[#C5A059]" />
             <span>Arquivos & Migração</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('telemetry')}
+            className={`py-3.5 px-4 border-b-2 flex items-center space-x-2 transition-colors cursor-pointer whitespace-nowrap ${
+              activeTab === 'telemetry'
+                ? 'border-[#C5A059] text-white font-semibold'
+                : 'border-transparent text-[#94A3B8] hover:text-white'
+            }`}
+          >
+            <Eye className="h-3.5 w-3.5 text-[#C5A059]" />
+            <span>Visitante por IP & Origem</span>
           </button>
         </div>
 
@@ -569,6 +583,110 @@ export const DocumentationPage: React.FC<DocumentationPageProps> = ({ onNavigate
                     public/equipe/
                   </span>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* ================= ABA 6: TELEMETRIA DE VISITANTE & AUDITORIA ================= */}
+          {activeTab === 'telemetry' && (
+            <div className="space-y-6">
+              <div className="bg-[#060D17] border border-[#C5A059]/30 rounded-lg p-5">
+                <h4 className="text-sm font-serif text-white font-semibold flex items-center gap-2">
+                  <Eye className="h-4 w-4 text-[#C5A059]" />
+                  Telemetria em Tempo Real: Visitante por IP & Origem de Acesso
+                </h4>
+                <p className="text-xs text-[#94A3B8] mt-1 leading-relaxed">
+                  Monitoramento seguro de sessão para conformidade com a LGPD e Marco Civil da Internet (Art. 15 da Lei nº 12.965/2014).
+                </p>
+              </div>
+
+              {/* Box de Dados da Sessão Capturada */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+                <div className="p-5 bg-[#060D17] rounded-xl border border-[#1E293B] space-y-3">
+                  <h5 className="text-[11px] font-sans uppercase font-bold text-[#C5A059] tracking-wider">
+                    Conexão & Rede
+                  </h5>
+                  <div className="space-y-2">
+                    <div>
+                      <span className="text-[#94A3B8] block text-[10px]">ENDEREÇO IP (CLIENT-SIDE)</span>
+                      <span className="text-white text-sm font-bold">{getStoredSession()?.ip || 'Detectando...'}</span>
+                    </div>
+                    <div>
+                      <span className="text-[#94A3B8] block text-[10px]">CANAL DE ORIGEM DETECTADO</span>
+                      <span className="text-cyan-400 font-bold">{getStoredSession()?.origin || 'Acesso Direto'}</span>
+                    </div>
+                    <div>
+                      <span className="text-[#94A3B8] block text-[10px]">REFERRER HTTP</span>
+                      <span className="text-[#CBD5E1] truncate block">{getStoredSession()?.referrer || '(Vazio / Navegação Direta)'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-5 bg-[#060D17] rounded-xl border border-[#1E293B] space-y-3">
+                  <h5 className="text-[11px] font-sans uppercase font-bold text-[#C5A059] tracking-wider">
+                    Privacidade & Dispositivo
+                  </h5>
+                  <div className="space-y-2">
+                    <div>
+                      <span className="text-[#94A3B8] block text-[10px]">STATUS DE CONSENTIMENTO LGPD</span>
+                      <span className="inline-block px-2 py-0.5 rounded text-[11px] font-bold uppercase bg-emerald-950/40 text-emerald-400 border border-emerald-800/40">
+                        {getStoredSession()?.consentStatus || 'pending'}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#94A3B8] block text-[10px]">TIPO DE DISPOSITIVO</span>
+                      <span className="text-white">{getStoredSession()?.deviceType || 'Desktop'}</span>
+                    </div>
+                    <div>
+                      <span className="text-[#94A3B8] block text-[10px]">INÍCIO DA SESSÃO</span>
+                      <span className="text-[#CBD5E1] text-[11px]">{getStoredSession()?.sessionStartTime || new Date().toISOString()}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Status dos Scripts Terceiros */}
+              <div className="p-5 bg-[#060D17] rounded-xl border border-[#1E293B] space-y-3">
+                <h5 className="text-xs uppercase font-bold text-white tracking-wider">
+                  Status de Injeção de Scripts (Chatwoot & Clarity)
+                </h5>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div className="p-3 bg-[#0B192C] rounded border border-[#1E293B] flex items-center justify-between">
+                    <div>
+                      <span className="font-semibold text-white block">Microsoft Clarity</span>
+                      <span className="text-[10px] text-[#94A3B8]">Heatmaps e gravações fiduciárias</span>
+                    </div>
+                    <span className="text-[10px] font-mono px-2 py-1 rounded bg-cyan-950/40 text-cyan-400 border border-cyan-800/40">
+                      PRONTO (ENV)
+                    </span>
+                  </div>
+
+                  <div className="p-3 bg-[#0B192C] rounded border border-[#1E293B] flex items-center justify-between">
+                    <div>
+                      <span className="font-semibold text-white block">Chatwoot Live Chat</span>
+                      <span className="text-[10px] text-[#94A3B8]">Atendimento e triagem ao vivo</span>
+                    </div>
+                    <span className="text-[10px] font-mono px-2 py-1 rounded bg-cyan-950/40 text-cyan-400 border border-cyan-800/40">
+                      PRONTO (ENV)
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Acesso rápido às páginas de compliance */}
+              <div className="flex flex-wrap gap-3 pt-2">
+                <button
+                  onClick={() => onNavigate('privacidade')}
+                  className="py-2 px-4 rounded-lg bg-[#060D17] border border-[#C5A059]/40 hover:border-[#C5A059] text-xs font-semibold text-white transition-colors cursor-pointer"
+                >
+                  Ver Página: Política de Privacidade →
+                </button>
+                <button
+                  onClick={() => onNavigate('termos')}
+                  className="py-2 px-4 rounded-lg bg-[#060D17] border border-[#C5A059]/40 hover:border-[#C5A059] text-xs font-semibold text-white transition-colors cursor-pointer"
+                >
+                  Ver Página: Termos de Uso →
+                </button>
               </div>
             </div>
           )}
