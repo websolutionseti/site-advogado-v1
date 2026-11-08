@@ -91,55 +91,65 @@ export const FloatingCtaWidget: React.FC<FloatingCtaWidgetProps> = ({ onOpenInta
   };
 
   return (
-    <aside
-      ref={containerRef}
-      aria-label="Canais Rápidos de Atendimento e Plantão"
-      className="fixed bottom-6 right-6 z-50 flex flex-col items-end select-none"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      {/* 
-        =======================================================================
-        MENU EXPANSÍVEL: 2 CTAs (INICIAR CHAT + PLANTÃO WHATSAPP)
-        =======================================================================
-      */}
-      <div
-        className={`mb-3 w-80 sm:w-88 rounded-2xl border border-slate-700/80 bg-[#0B192C]/95 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.6),0_0_30px_rgba(0,163,255,0.15)] transition-all duration-300 transform origin-bottom-right ${
-          isOpen
-            ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
-            : 'opacity-0 scale-95 translate-y-3 pointer-events-none invisible'
-        }`}
-        role="dialog"
-        aria-hidden={!isOpen}
-        aria-label="Opções de Atendimento Imediato"
-      >
-        {/* Cabeçalho do Card */}
-        <div className="flex items-center justify-between border-b border-slate-700/60 px-4 py-3.5 bg-[#0D2538]/70 rounded-t-2xl">
-          <div className="flex items-center gap-2.5">
-            {/* Ponto azul piscando com brilho branco */}
-            <span className="relative flex h-3 w-3">
-              <span className="animate-pulse-blue-glow absolute inline-flex h-full w-full rounded-full"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-[#00A3FF]"></span>
-            </span>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-100 font-brand">
-                Plantão & Atendimento
-              </p>
-              <p className="text-[10px] text-emerald-400 font-medium">
-                Online Agora • Dr. Victor Cartes
-              </p>
-            </div>
-          </div>
+    <>
+      {/* Backdrop sutil no mobile para fechar o modal com toque em qualquer área */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/25 backdrop-blur-[1px] sm:hidden transition-opacity duration-200"
+          onClick={() => setIsOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
-          <button
-            type="button"
-            onClick={() => setIsOpen(false)}
-            aria-label="Fechar menu de atendimento"
-            className="text-slate-400 hover:text-white p-1 rounded-md hover:bg-white/10 transition-colors"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
+      <aside
+        ref={containerRef}
+        aria-label="Canais Rápidos de Atendimento e Plantão"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end select-none"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {/* 
+          =======================================================================
+          MENU EXPANSÍVEL: 2 CTAs (INICIAR CHAT + PLANTÃO WHATSAPP)
+          =======================================================================
+        */}
+        <div
+          className={`mb-3 w-[calc(100vw-2rem)] max-w-sm sm:w-88 rounded-2xl border border-slate-700/80 bg-[#0B192C]/95 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.6),0_0_30px_rgba(0,163,255,0.15)] transition-all duration-300 transform origin-bottom-right ${
+            isOpen
+              ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
+              : 'opacity-0 scale-95 translate-y-3 pointer-events-none invisible'
+          }`}
+          role="dialog"
+          aria-hidden={!isOpen}
+          aria-label="Opções de Atendimento Imediato"
+        >
+          {/* Cabeçalho do Card */}
+          <div className="flex items-center justify-between border-b border-slate-700/60 px-4 py-3 bg-[#0D2538]/70 rounded-t-2xl">
+            <div className="flex items-center gap-2.5">
+              {/* Ponto azul piscando com brilho branco */}
+              <span className="relative flex h-3 w-3">
+                <span className="animate-pulse-blue-glow absolute inline-flex h-full w-full rounded-full"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#00A3FF]"></span>
+              </span>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-100 font-brand">
+                  Plantão & Atendimento
+                </p>
+                <p className="text-[10px] text-emerald-400 font-medium">
+                  Online Agora • Dr. Victor Cartes
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              aria-label="Fechar menu de atendimento"
+              className="text-slate-400 hover:text-white p-2 min-h-[36px] min-w-[36px] flex items-center justify-center rounded-lg hover:bg-white/10 active:scale-95 transition-all"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
 
         {/* Lista dos 2 CTAs Solicitados */}
         <div className="p-3.5 space-y-2.5">
@@ -227,7 +237,7 @@ export const FloatingCtaWidget: React.FC<FloatingCtaWidgetProps> = ({ onOpenInta
         onClick={handleButtonClick}
         aria-expanded={isOpen}
         aria-label="Abrir canais de atendimento imediato: Chat e Plantão WhatsApp"
-        className="group relative flex items-center gap-3 bg-[#25D366] hover:bg-[#1EBE5D] text-white px-3.5 py-3 sm:px-4 sm:py-3.5 rounded-full shadow-[0_10px_25px_-5px_rgba(37,211,102,0.45),0_0_20px_2px_rgba(0,163,255,0.3)] hover:shadow-[0_15px_35px_-5px_rgba(37,211,102,0.6),0_0_25px_4px_rgba(0,163,255,0.5)] hover:scale-[1.04] active:scale-[0.97] transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#25D366]/50"
+        className="group relative flex items-center justify-center gap-2.5 bg-[#25D366] hover:bg-[#1EBE5D] text-white p-3 sm:px-4 sm:py-3.5 rounded-full shadow-[0_10px_25px_-5px_rgba(37,211,102,0.45),0_0_20px_2px_rgba(0,163,255,0.3)] hover:shadow-[0_15px_35px_-5px_rgba(37,211,102,0.6),0_0_25px_4px_rgba(0,163,255,0.5)] hover:scale-[1.04] active:scale-[0.96] transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#25D366]/50"
       >
         {/* Ponto Azul Piscando com Brilho Branco Constante (velocidade uniforme e constante) */}
         <span className="relative flex h-3.5 w-3.5 shrink-0" title="Plantão Disponível">
@@ -247,13 +257,14 @@ export const FloatingCtaWidget: React.FC<FloatingCtaWidgetProps> = ({ onOpenInta
 
         {/* 
           Palavra "PLANTÃO WHATSAPP"
-          - No desktop: visível suavemente ou expande ao passar o mouse
-          - No mobile: exibição elegante e equilibrada
+          - No desktop: visível suavemente
+          - No mobile: oculto para manter o botão circular compacto que não bloqueia a tela
         */}
-        <span className="font-sans text-xs uppercase tracking-wider font-extrabold whitespace-nowrap inline-block transition-all duration-300">
+        <span className="hidden sm:inline-block font-sans text-xs uppercase tracking-wider font-extrabold whitespace-nowrap transition-all duration-300">
           PLANTÃO WHATSAPP
         </span>
       </button>
     </aside>
+    </>
   );
 };
