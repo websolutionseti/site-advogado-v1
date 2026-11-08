@@ -105,6 +105,7 @@ export const A11yWidget: React.FC<A11yWidgetProps> = ({ onStateChange }) => {
   };
 
   const isHighContrastActive = prefs.contrastMode === 'dark' || prefs.contrastMode === 'light' || prefs.highContrast;
+  const isActive = isOpen || isHighContrastActive;
 
   return (
     <div 
@@ -113,7 +114,7 @@ export const A11yWidget: React.FC<A11yWidgetProps> = ({ onStateChange }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Botão de Disparo no Menu com Tooltip Acessível */}
+      {/* Botão de Disparo no Menu: Estilo Inativo (Borda Dourada / Fundo Escuro) e Ativo (Amarelo Ouro com Brilho) */}
       <button
         type="button"
         onClick={() => setIsOpen(prev => !prev)}
@@ -123,10 +124,10 @@ export const A11yWidget: React.FC<A11yWidgetProps> = ({ onStateChange }) => {
         aria-haspopup="dialog"
         aria-label="Acessibilidade (a11y) e preferências de exibição"
         aria-describedby="a11y-tooltip"
-        className={`relative flex items-center justify-center h-9 w-9 rounded-full border transition-all duration-300 cursor-pointer ${
-          isHighContrastActive
-            ? 'bg-[#FFD700] text-black border-[#FFD700] shadow-[0_0_14px_rgba(255,215,0,0.7)] scale-105'
-            : 'bg-white/5 border-[#C5A059]/40 text-[#DFCAAB] hover:text-white hover:bg-white/10 hover:border-[#C5A059] focus:outline-none focus:ring-2 focus:ring-[#C5A059]'
+        className={`relative flex items-center justify-center h-9 w-9 rounded-full border-2 transition-all duration-300 cursor-pointer ${
+          isActive || isHovered
+            ? 'bg-[#FFD700] text-black border-[#FFD700] shadow-[0_0_16px_rgba(255,215,0,0.85)] scale-105'
+            : 'bg-[#181C24] border-[#C5A059] text-white hover:border-[#FFD700] hover:text-[#FFD700] hover:shadow-[0_0_10px_rgba(197,160,89,0.4)]'
         }`}
       >
         <Eye className="h-4 w-4" />

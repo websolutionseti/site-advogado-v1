@@ -34,8 +34,12 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isA11yActive, setIsA11yActive] = useState(false);
+  const [mobileA11yVisible, setMobileA11yVisible] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('cartes_mobile_a11y_visible') === 'true';
+  });
 
-  // Monitorar hover/foco no widget de Acessibilidade para transicionar a TopBar
+  // Monitorar hover/foco no widget de Acessibilidade para exibir ícone na TopBar
   useEffect(() => {
     const handleA11yHover = (e: any) => {
       if (e.detail) {
@@ -49,6 +53,15 @@ export const Navbar: React.FC<NavbarProps> = ({
   const handleNavClick = (page: NavigationPage) => {
     onNavigate(page);
     setMobileMenuOpen(false);
+  };
+
+  const handleOpenMobileA11y = () => {
+    setMobileA11yVisible(true);
+    try {
+      localStorage.setItem('cartes_mobile_a11y_visible', 'true');
+    } catch {}
+    setMobileMenuOpen(false);
+    openA11yModal();
   };
 
   return (
@@ -80,17 +93,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center space-x-4">
             <span 
               className={`text-[11px] font-medium tracking-wide transition-all duration-300 flex items-center gap-1.5 ${
-                isA11yActive ? 'text-[#FFD700] font-bold' : 'text-[#94A3B8]'
+                isA11yActive ? 'text-[#FFD700] font-bold' : 'text-[#DFCAAB]'
               }`}
             >
-              {isA11yActive ? (
-                <>
-                  <Accessibility className="h-3.5 w-3.5 text-[#FFD700] animate-pulse" />
-                  <span>Atendimento Inclusivo</span>
-                </>
-              ) : (
-                <span>Atendimento Fiduciário & Sigiloso</span>
+              {isA11yActive && (
+                <Accessibility className="h-3.5 w-3.5 text-[#FFD700] animate-pulse" />
               )}
+              <span>Atendimento Inclusivo</span>
             </span>
             <span className="text-neutral-700">|</span>
             
@@ -225,9 +234,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Action CTA, A11y & Mobile Toggle */}
           <div className="flex items-center space-x-3 sm:space-x-4">
-            {/* Widget de Acessibilidade & Alto Contraste (A11y) */}
-            <A11yWidget />
-
+            {/* 1. Botão Agendar Consulta */}
             <button
               type="button"
               onClick={() => handleNavClick('contato')}
@@ -236,7 +243,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               Agendar Consulta
             </button>
 
-            {/* Mobile Hamburger Toggle Button */}
+            {/* 2. Desktop A11y Widget: Posicionado DEPOIS de Agendar Consulta */}
+            <div className="hidden lg:block">
+              <A11yWidget />
+            </div>
+
+            {/* 3. Mobile Eye Icon: Só aparece ao lado do Hamburger se o usuário clicou em Acessibilidade no menu mobile */}
+            {mobileA11yVisible && (
+              <div className="lg:hidden animate-fadeIn">
+                <A11yWidget />
+              </div>
+            )}
+
+            {/* 4. Mobile Hamburger Toggle Button */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -253,23 +272,11 @@ export const Navbar: React.FC<NavbarProps> = ({
         {mobileMenuOpen && (
           <div className="lg:hidden bg-[#0C0E12] border-b border-[#C5A880]/30 px-6 py-5 text-xs uppercase tracking-widest space-y-4">
             
-            {/* Topo do Menu Mobile: Identificação + Botão Acessibilidade Rápido (Amarelo/Ouro) */}
+            {/* Topo do Menu Mobile: Identificação Institucional */}
             <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <span className="font-playfair text-sm tracking-[0.2em] text-[#C5A880] uppercase font-bold">
                 CARTES ADVOGADOS
               </span>
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  openA11yModal();
-                }}
-                className="flex items-center justify-center h-8 w-8 rounded-full bg-[#FFD700] text-black shadow-[0_0_12px_rgba(255,215,0,0.7)] active:scale-95 transition-all cursor-pointer"
-                aria-label="Abrir opções de acessibilidade e alto contraste"
-                title="Acessibilidade (a11y)"
-              >
-                <Eye className="h-4 w-4" />
-              </button>
             </div>
 
             <button
@@ -315,13 +322,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               Contato
             </button>
 
-            {/* Novo Item: Acessibilidade (com ícone tradicional A11y acima do CTA WhatsApp) */}
+            {/* Novo Item: Acessibilidade (ao clicar, torna o olho visível no header mobile e abre as opções) */}
             <button
               type="button"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                openA11yModal();
-              }}
+              onClick={handleOpenMobileA11y}
               className="flex items-center justify-between w-full py-2.5 text-left text-neutral-200 hover:text-[#C5A880] transition-colors border-t border-white/10 pt-3.5 cursor-pointer"
             >
               <span className="flex items-center gap-2.5">
