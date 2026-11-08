@@ -260,49 +260,67 @@ export const Footer: React.FC<FooterProps> = ({
 
         {/* ================================================================== */}
         {/* BASE DO FOOTER (Border-top fina #333333) */}
+        {/* Nova Ordem: Início (Web Solutions ETI por Guilherme Puentes) -> Meio (Privacidade, Termos & OAB) -> Fim (Copyright) */}
         {/* ================================================================== */}
-        <div className="pt-8 border-t border-[#333333] flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 text-xs text-[#8E95A0]">
+        <div className="pt-8 border-t border-[#333333] flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8 text-xs text-[#8E95A0]">
           
-          {/* Direitos Autorais & Crédito Discreto */}
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-1 sm:gap-2 text-center md:text-left">
-            <p>© 2026 Cartes Advogados. Todos os direitos reservados.</p>
-            <span className="hidden sm:inline text-[#4A4A4A]">·</span>
-            <p className="text-[11px] text-[#71717A]">
-              Tecnologia & Produto por{' '}
-              <button
+          {/* 1. INÍCIO: Web Solutions ETI por Guilherme Puentes */}
+          <div className="flex flex-wrap items-center justify-center lg:justify-start gap-1.5 text-center lg:text-left">
+            <span className="text-[#8E95A0]">Desenvolvimento & Inteligência Técnica:</span>
+            <a
+              href="https://websolutions.eti.br/guilherme"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#DFCAAB] hover:text-white underline underline-offset-2 transition-colors font-medium"
+              title="Web Solutions ETI"
+            >
+              Web Solutions ETI
+            </a>
+            <span className="text-[#4A4A4A]">por</span>
+            <button
+              type="button"
+              onClick={() => onNavigate ? onNavigate('guilhermepuentes') : null}
+              className="inline-flex items-center gap-1 text-[#C5A059] hover:text-white underline-offset-2 hover:underline cursor-pointer font-semibold transition-colors"
+              title="Conhecer CTO & Arquiteto de Software Guilherme Puentes"
+            >
+              Guilherme Puentes (CTO)
+            </button>
+          </div>
+
+          {/* 2. MEIO: Política de Privacidade | Termos de Uso & OAB Responsável */}
+          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 text-center">
+            <div className="flex items-center space-x-4 text-xs">
+              <button 
                 type="button"
-                onClick={() => onNavigate ? onNavigate('guilhermepuentes') : null}
-                className="text-[#C5A880] hover:text-white underline-offset-2 hover:underline cursor-pointer font-medium transition-colors"
-                title="Conhecer CTO & Arquiteto de Software Guilherme Puentes"
+                onClick={() => onNavigate ? onNavigate('privacidade') : null}
+                className="hover:text-[#C5A880] transition-colors cursor-pointer"
               >
-                Guilherme Puentes (CTO)
+                Política de Privacidade
               </button>
+              <span className="text-[#4A4A4A]">|</span>
+              <button 
+                type="button"
+                onClick={() => onNavigate ? onNavigate('termos') : null}
+                className="hover:text-[#C5A880] transition-colors cursor-pointer"
+              >
+                Termos de Uso
+              </button>
+            </div>
+
+            <span className="hidden sm:inline text-[#4A4A4A]">·</span>
+
+            {/* OAB Responsável */}
+            <p className="font-medium tracking-wide text-[#DFCAAB]">
+              Victor Hugo Lira Cartes - OAB/SP 421.506
             </p>
           </div>
 
-          {/* Links Legais com Páginas Dedicadas */}
-          <div className="flex flex-wrap items-center justify-center space-x-6 text-xs">
-            <button 
-              type="button"
-              onClick={() => onNavigate ? onNavigate('privacidade') : null}
-              className="hover:text-[#C5A880] transition-colors cursor-pointer"
-            >
-              Política de Privacidade
-            </button>
-            <span>|</span>
-            <button 
-              type="button"
-              onClick={() => onNavigate ? onNavigate('termos') : null}
-              className="hover:text-[#C5A880] transition-colors cursor-pointer"
-            >
-              Termos de Uso
-            </button>
+          {/* 3. FIM: Direitos Autorais (com margem de segurança contra colisão do CTA flutuante) */}
+          <div className="text-center lg:text-right pr-0 lg:pr-24 xl:pr-28">
+            <p className="text-[11px] text-[#71717A]">
+              © 2026 Cartes Advogados. Todos os direitos reservados.
+            </p>
           </div>
-
-          {/* OAB Responsável */}
-          <p className="font-medium tracking-wide text-[#DFCAAB] text-center md:text-right">
-            Victor Hugo Lira Cartes - OAB/SP 421.506
-          </p>
 
         </div>
 

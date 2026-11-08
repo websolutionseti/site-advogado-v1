@@ -136,6 +136,32 @@ html.high-contrast button {
   text-decoration-thickness: 2px !important;
 }
 
+/* Modo Alto Contraste Claro — Opção acessível não-preto e dourado */
+html.high-contrast-light {
+  filter: contrast(115%);
+  --cartes-canvas-bg: #FFFFFF;
+  --cartes-petrol-deep: #F8FAFC;
+  --cartes-petrol-surface: #FFFFFF;
+  --cartes-petrol-elevated: #F1F5F9;
+  --cartes-gold-noble: #92400E;
+  --cartes-text-primary: #0F172A;
+  --cartes-text-secondary: #1E293B;
+  --cartes-text-muted: #334155;
+}
+
+html.high-contrast-light body {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+html.high-contrast-light header,
+html.high-contrast-light nav,
+html.high-contrast-light footer {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
 html.font-scale-lg {
   font-size: 112.5% !important; /* 18px base */
 }

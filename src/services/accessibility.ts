@@ -8,6 +8,7 @@
 
 export interface A11yPreferences {
   highContrast: boolean;
+  contrastMode?: 'default' | 'dark' | 'light';
   fontScale: 'normal' | 'lg' | 'xl';
   reducedMotion: boolean;
 }
@@ -16,6 +17,7 @@ const STORAGE_KEY = 'cartes_a11y_prefs';
 
 export const defaultPreferences: A11yPreferences = {
   highContrast: false,
+  contrastMode: 'default',
   fontScale: 'normal',
   reducedMotion: false,
 };
@@ -36,11 +38,12 @@ export const applyA11yPreferences = (prefs: A11yPreferences) => {
 
   const root = document.documentElement;
 
-  // 1. Alto Contraste
-  if (prefs.highContrast) {
+  // 1. Modos de Contraste (Padrão, Escuro Preto/Ouro ou Claro Não-Preto)
+  root.classList.remove('high-contrast', 'high-contrast-light');
+  if (prefs.contrastMode === 'light') {
+    root.classList.add('high-contrast-light');
+  } else if (prefs.contrastMode === 'dark' || prefs.highContrast) {
     root.classList.add('high-contrast');
-  } else {
-    root.classList.remove('high-contrast');
   }
 
   // 2. Escala de Fonte
@@ -65,6 +68,18 @@ export const applyA11yPreferences = (prefs: A11yPreferences) => {
   }
 
   window.dispatchEvent(new CustomEvent('cartes:a11y-changed', { detail: prefs }));
+};
+
+export const openA11yModal = () => {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('cartes:open-a11y-modal'));
+  }
+};
+
+export const setA11yHoverState = (isHovered: boolean) => {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('cartes:a11y-hover', { detail: { isHovered } }));
+  }
 };
 
 export const toggleHighContrast = (): boolean => {

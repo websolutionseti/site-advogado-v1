@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FileText, 
   Menu, 
@@ -7,10 +7,13 @@ import {
   Phone, 
   ShieldCheck, 
   Search,
-  MessageSquare
+  MessageSquare,
+  Accessibility,
+  Eye
 } from 'lucide-react';
 import { NavigationPage } from '../types';
 import { A11yWidget } from './A11yWidget';
+import { openA11yModal } from '../services/accessibility';
 
 interface NavbarProps {
   currentPage: NavigationPage;
@@ -30,6 +33,18 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenStyleGuide
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isA11yActive, setIsA11yActive] = useState(false);
+
+  // Monitorar hover/foco no widget de Acessibilidade para transicionar a TopBar
+  useEffect(() => {
+    const handleA11yHover = (e: any) => {
+      if (e.detail) {
+        setIsA11yActive(Boolean(e.detail.isHovered));
+      }
+    };
+    window.addEventListener('cartes:a11y-hover', handleA11yHover);
+    return () => window.removeEventListener('cartes:a11y-hover', handleA11yHover);
+  }, []);
 
   const handleNavClick = (page: NavigationPage) => {
     onNavigate(page);
@@ -63,8 +78,19 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           <div className="flex items-center space-x-4">
-            <span className="text-[11px] text-[#94A3B8] font-medium tracking-wide">
-              Atendimento Fiduciário & Sigiloso
+            <span 
+              className={`text-[11px] font-medium tracking-wide transition-all duration-300 flex items-center gap-1.5 ${
+                isA11yActive ? 'text-[#FFD700] font-bold' : 'text-[#94A3B8]'
+              }`}
+            >
+              {isA11yActive ? (
+                <>
+                  <Accessibility className="h-3.5 w-3.5 text-[#FFD700] animate-pulse" />
+                  <span>Atendimento Inclusivo</span>
+                </>
+              ) : (
+                <span>Atendimento Fiduciário & Sigiloso</span>
+              )}
             </span>
             <span className="text-neutral-700">|</span>
             
@@ -225,7 +251,27 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Mobile Dropdown Navigation */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-[#0C0E12] border-b border-[#C5A880]/30 px-6 py-6 text-xs uppercase tracking-widest space-y-4">
+          <div className="lg:hidden bg-[#0C0E12] border-b border-[#C5A880]/30 px-6 py-5 text-xs uppercase tracking-widest space-y-4">
+            
+            {/* Topo do Menu Mobile: Identificação + Botão Acessibilidade Rápido (Amarelo/Ouro) */}
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <span className="font-playfair text-sm tracking-[0.2em] text-[#C5A880] uppercase font-bold">
+                CARTES ADVOGADOS
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openA11yModal();
+                }}
+                className="flex items-center justify-center h-8 w-8 rounded-full bg-[#FFD700] text-black shadow-[0_0_12px_rgba(255,215,0,0.7)] active:scale-95 transition-all cursor-pointer"
+                aria-label="Abrir opções de acessibilidade e alto contraste"
+                title="Acessibilidade (a11y)"
+              >
+                <Eye className="h-4 w-4" />
+              </button>
+            </div>
+
             <button
               type="button"
               onClick={() => handleNavClick('home')}
@@ -269,12 +315,32 @@ export const Navbar: React.FC<NavbarProps> = ({
               Contato
             </button>
 
-            <div className="pt-4 border-t border-white/10 flex flex-col gap-2">
+            {/* Novo Item: Acessibilidade (com ícone tradicional A11y acima do CTA WhatsApp) */}
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                openA11yModal();
+              }}
+              className="flex items-center justify-between w-full py-2.5 text-left text-neutral-200 hover:text-[#C5A880] transition-colors border-t border-white/10 pt-3.5 cursor-pointer"
+            >
+              <span className="flex items-center gap-2.5">
+                <Accessibility className="h-4 w-4 text-[#FFD700]" />
+                <span className="font-semibold text-[#DFCAAB] tracking-wider text-[11px]">
+                  Acessibilidade
+                </span>
+              </span>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-[#FFD700]/15 text-[#FFD700] font-mono font-bold border border-[#FFD700]/30">
+                A11Y
+              </span>
+            </button>
+
+            <div className="pt-2 border-t border-white/10 flex flex-col gap-2">
               <a
                 href="https://wa.me/5511973758834"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full text-center py-2.5 bg-[#25D366] text-white font-bold tracking-wider uppercase text-[11px]"
+                className="w-full text-center py-2.5 bg-[#25D366] text-white font-bold tracking-wider uppercase text-[11px] rounded"
               >
                 Falar no WhatsApp
               </a>
