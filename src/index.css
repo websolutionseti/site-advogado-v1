@@ -110,3 +110,44 @@
   animation: cta-subtle-glow 2.5s ease-in-out infinite;
 }
 
+
+/* ==========================================================================
+   ACIBILIDADE (A11Y) & MODO ALTO CONTRASTE (Padrão BETI / WCAG AAA)
+   ========================================================================== */
+html.high-contrast {
+  filter: contrast(125%);
+  --cartes-canvas-bg: #000000;
+  --cartes-petrol-deep: #000000;
+  --cartes-petrol-surface: #0a0a0a;
+  --cartes-petrol-elevated: #141414;
+  --cartes-gold-noble: #FFD700;
+  --cartes-text-primary: #FFFFFF;
+  --cartes-text-secondary: #FFFFFF;
+  --cartes-text-muted: #E2E8F0;
+}
+
+html.high-contrast body {
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+}
+
+html.high-contrast a,
+html.high-contrast button {
+  text-decoration-thickness: 2px !important;
+}
+
+html.font-scale-lg {
+  font-size: 112.5% !important; /* 18px base */
+}
+
+html.font-scale-xl {
+  font-size: 125% !important; /* 20px base */
+}
+
+html.reduced-motion *,
+html.reduced-motion *::before,
+html.reduced-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}

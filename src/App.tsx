@@ -14,6 +14,7 @@ import { ContatoPage } from './components/ContatoPage';
 import { DocumentationPage } from './components/DocumentationPage';
 import { PoliticaPrivacidadePage } from './components/PoliticaPrivacidadePage';
 import { TermosUsoPage } from './components/TermosUsoPage';
+import { GuilhermePuentesPage } from './components/GuilhermePuentesPage';
 import { CookieConsentBanner } from './components/CookieConsentBanner';
 import { CartesLayout } from './components/CartesLayout';
 import { NavigationPage } from './types';
@@ -36,6 +37,9 @@ const detectRouteFromUrl = (): NavigationPage => {
   }
   if (path === '/termos' || hash === '#termos') {
     return 'termos';
+  }
+  if (path === '/guilhermepuentes' || hash === '#guilhermepuentes') {
+    return 'guilhermepuentes';
   }
 
   return 'home';
@@ -75,8 +79,10 @@ export default function App() {
       window.location.hash = '#privacidade';
     } else if (page === 'termos') {
       window.location.hash = '#termos';
+    } else if (page === 'guilhermepuentes') {
+      window.location.hash = '#guilhermepuentes';
     } else {
-      if (['#doc', '#anexo', '#privacidade', '#termos'].includes(window.location.hash)) {
+      if (['#doc', '#anexo', '#privacidade', '#termos', '#guilhermepuentes'].includes(window.location.hash)) {
         window.history.pushState(null, '', '/');
       }
     }
@@ -167,6 +173,13 @@ export default function App() {
         {/* PÁGINA DEDICADA: TERMOS DE USO INSTITUCIONAIS */}
         {currentPage === 'termos' && (
           <TermosUsoPage
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* PÁGINA DEDICADA: GUILHERME PUENTES (CTO & ARQUITETO DE SOFTWARE) */}
+        {currentPage === 'guilhermepuentes' && (
+          <GuilhermePuentesPage
             onNavigate={handleNavigate}
           />
         )}

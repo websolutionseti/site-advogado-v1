@@ -10,6 +10,7 @@ import {
   MessageSquare
 } from 'lucide-react';
 import { NavigationPage } from '../types';
+import { A11yWidget } from './A11yWidget';
 
 interface NavbarProps {
   currentPage: NavigationPage;
@@ -196,8 +197,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           </nav>
 
-          {/* Action CTA & Mobile Toggle */}
-          <div className="flex items-center space-x-4">
+          {/* Action CTA, A11y & Mobile Toggle */}
+          <div className="flex items-center space-x-3 sm:space-x-4">
+            {/* Widget de Acessibilidade & Alto Contraste (A11y) */}
+            <A11yWidget />
+
             <button
               type="button"
               onClick={() => handleNavClick('contato')}
