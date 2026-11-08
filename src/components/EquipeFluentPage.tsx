@@ -500,125 +500,157 @@ export const EquipeFluentPage: React.FC<EquipeFluentPageProps> = ({
             </div>
           </section>
 
-          {/* 4. SEÇÃO CONSULTORIA (Horizontal Card) — Fluent 2 Component */}
-          <section 
-            aria-labelledby="consultoria-title" 
-            className="bg-[#f5f5f2] py-16 border-t border-b border-[#e5e5e0]"
-          >
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              
-              {/* Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-[#deded9] pb-6 mb-10">
-                <div className="flex items-center gap-4">
-                  <h2 
-                    id="consultoria-title"
-                    className="font-playfair text-3xl font-normal text-[#111827] sm:text-4xl"
-                  >
-                    Consultoria e áreas complementares
-                  </h2>
-                  <div className="hidden sm:block h-[1px] w-24 bg-[#c5a880]" aria-hidden="true" />
-                </div>
-                <p className="mt-2 sm:mt-0 text-[11px] uppercase tracking-[0.2em] text-[#717b8f]">
-                  CONHECIMENTO MULTIDISCIPLINAR PARA SOLUÇÕES MAIS COMPLETAS.
-                </p>
-              </div>
+          {/* 4. SEÇÃO SÓCIO FUNDADOR & DESTAQUE FIDUCIÁRIO (Horizontal Card) — Fluent 2 Component */}
+          {(() => {
+            // Lógica de Destaque Fiduciário e Segmentação A/B por busca (SEO / UTM)
+            const getFeatured = (): LawyerProfile => {
+              if (typeof window === 'undefined') return lawyers[0];
+              const params = new URLSearchParams(window.location.search);
+              const slug = (params.get('destaque') || params.get('advogado') || params.get('area') || '').toLowerCase();
+              if (slug.includes('digital') || slug.includes('compliance') || slug.includes('leonardo')) {
+                return lawyers.find(l => l.id === 'leonardo-gutierrez') || lawyers[0];
+              }
+              if (slug.includes('societ') || slug.includes('m&a') || slug.includes('anderson')) {
+                return lawyers.find(l => l.id === 'anderson-bispo') || lawyers[0];
+              }
+              if (slug.includes('trabalh') || slug.includes('contrat') || slug.includes('pedro')) {
+                return lawyers.find(l => l.id === 'pedro-sirna') || lawyers[0];
+              }
+              if (slug.includes('contab') || slug.includes('tribut') || slug.includes('brenner')) {
+                return consultant;
+              }
+              // Padrão: Sócio Fundador Victor Hugo Lira Cartes
+              return lawyers[0];
+            };
 
-              {/* Horizontal <Card> for Brenner Aparecido Refundini */}
-              <article 
-                className="mx-auto max-w-4xl"
-                aria-labelledby="consultant-name"
+            const featured = getFeatured();
+            const isFounder = featured.id === 'victor-cartes';
+
+            return (
+              <section 
+                aria-labelledby="featured-lawyer-title" 
+                className="bg-[#f5f5f2] py-16 border-t border-b border-[#e5e5e0]"
               >
-                <Card 
-                  className="group !rounded-none !border !border-[#deded9] !bg-white !shadow-md transition-all duration-300 hover:!border-[#c5a880] hover:!shadow-xl focus-within:ring-2 focus-within:ring-[#c5a880] !p-0"
-                  appearance="subtle"
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-12 items-stretch">
-                    
-                    {/* Left: Headshot */}
-                    <div className="md:col-span-5 relative aspect-[4/3.5] md:aspect-auto overflow-hidden bg-slate-900 border-b md:border-b-0 md:border-r border-[#deded9]">
-                      {!imageErrorMap[consultant.id] ? (
-                        <img
-                          src={consultant.photoUrl}
-                          alt={`Foto profissional de ${consultant.name}`}
-                          referrerPolicy="no-referrer"
-                          onError={() => handleImageError(consultant.id)}
-                          className="h-full w-full object-cover object-top filter grayscale contrast-110 transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="h-full w-full flex flex-col items-center justify-center bg-slate-950 p-6 text-center">
-                          <span className="font-playfair text-3xl text-[#c5a880]">BR</span>
-                          <span className="text-xs text-slate-400 mt-2 font-mono">CRC/SP</span>
-                        </div>
-                      )}
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                  
+                  {/* Header */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-[#deded9] pb-6 mb-10">
+                    <div className="flex items-center gap-4">
+                      <h2 
+                        id="featured-lawyer-title"
+                        className="font-playfair text-3xl font-normal text-[#111827] sm:text-4xl"
+                      >
+                        {isFounder ? 'Sócio Fundador & Direção Fiduciária' : 'Especialista em Destaque'}
+                      </h2>
+                      <div className="hidden sm:block h-[1px] w-24 bg-[#c5a880]" aria-hidden="true" />
                     </div>
-
-                    {/* Right: Info, Specialties & CTAs */}
-                    <div className="md:col-span-7 p-6 sm:p-8 flex flex-col justify-between">
-                      <div>
-                        <span className="text-[10px] font-inter uppercase tracking-widest text-[#717b8f] block mb-1">
-                          {consultant.role}
-                        </span>
-                        
-                        <h3 
-                          id="consultant-name"
-                          className="font-playfair text-2xl font-bold text-[#111827] group-hover:text-[#9e7d47] transition-colors"
-                        >
-                          {consultant.name}
-                        </h3>
-                        
-                        <span className="text-[11px] font-mono text-[#c5a880] block mt-1">
-                          {consultant.oab}
-                        </span>
-
-                        <p className="mt-3 text-xs leading-relaxed text-[#596375]">
-                          {consultant.bio}
-                        </p>
-
-                        <div className="mt-5 border-t border-[#f0f0eb] pt-4">
-                          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#111827] block mb-2">
-                            Especialidades & Atuação Técnica:
-                          </span>
-                          <ul className="space-y-1.5 text-xs text-[#4b5563]" aria-label="Especialidades contábeis">
-                            {consultant.specialties.map((spec, idx) => (
-                              <li key={idx} className="flex items-center gap-2">
-                                <span className="h-1.5 w-1.5 rounded-full bg-[#c5a880]" aria-hidden="true" />
-                                <span>{spec}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-
-                      <div className="mt-6 border-t border-[#f0f0eb] pt-4 flex flex-wrap items-center justify-between gap-3">
-                        <button
-                          type="button"
-                          onClick={() => setSelectedLawyer(consultant)}
-                          className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#9e7d47] hover:text-[#6e532b] focus-visible:outline-2 focus-visible:outline-[#9e7d47] cursor-pointer"
-                          aria-label={`Conheça o perfil completo de ${consultant.name}`}
-                        >
-                          <span>CONHEÇA O PERFIL</span>
-                          <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={onOpenIntake}
-                          className="text-xs text-[#717b8f] hover:text-[#111827] hover:underline cursor-pointer"
-                          aria-label="Agendar consultoria contábil e fiscal"
-                        >
-                          Agendar Consultoria Estratégica
-                        </button>
-                      </div>
-
-                    </div>
-
+                    <p className="mt-2 sm:mt-0 text-[11px] uppercase tracking-[0.2em] text-[#717b8f]">
+                      {isFounder 
+                        ? 'LIDERANÇA ESTRATÉGICA & GOVERNANÇA PATRIMONIAL.'
+                        : 'CONHECIMENTO MULTIDISCIPLINAR PARA SOLUÇÕES MAIS COMPLETAS.'}
+                    </p>
                   </div>
-                </Card>
-              </article>
 
-            </div>
-          </section>
+                  {/* Horizontal <Card> for Featured Profile */}
+                  <article 
+                    className="mx-auto max-w-4xl"
+                    aria-labelledby="featured-lawyer-name"
+                  >
+                    <Card 
+                      className="group !rounded-none !border !border-[#deded9] !bg-white !shadow-md transition-all duration-300 hover:!border-[#c5a880] hover:!shadow-xl focus-within:ring-2 focus-within:ring-[#c5a880] !p-0"
+                      appearance="subtle"
+                    >
+                      <div className="grid grid-cols-1 md:grid-cols-12 items-stretch">
+                        
+                        {/* Left: Headshot */}
+                        <div className="md:col-span-5 relative aspect-[4/3.5] md:aspect-auto overflow-hidden bg-slate-900 border-b md:border-b-0 md:border-r border-[#deded9]">
+                          {!imageErrorMap[featured.id] ? (
+                            <img
+                              src={featured.photoUrl}
+                              alt={`Foto profissional de ${featured.name}`}
+                              referrerPolicy="no-referrer"
+                              onError={() => handleImageError(featured.id)}
+                              className="h-full w-full object-cover object-top filter grayscale contrast-110 transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <div className="h-full w-full flex flex-col items-center justify-center bg-slate-950 p-6 text-center">
+                              <span className="font-playfair text-3xl text-[#c5a880]">VH</span>
+                              <span className="text-xs text-slate-400 mt-2 font-mono">{featured.oab}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Right: Info, Specialties & CTAs */}
+                        <div className="md:col-span-7 p-6 sm:p-8 flex flex-col justify-between">
+                          <div>
+                            <span className="text-[10px] font-inter uppercase tracking-widest text-[#717b8f] block mb-1">
+                              {featured.role}
+                            </span>
+                            
+                            <h3 
+                              id="featured-lawyer-name"
+                              className="font-playfair text-2xl font-bold text-[#111827] group-hover:text-[#9e7d47] transition-colors"
+                            >
+                              {featured.name}
+                            </h3>
+                            
+                            <span className="text-[11px] font-mono text-[#c5a880] block mt-1">
+                              {featured.oab}
+                            </span>
+
+                            <p className="mt-3 text-xs leading-relaxed text-[#596375]">
+                              {featured.bio}
+                            </p>
+
+                            <div className="mt-5 border-t border-[#f0f0eb] pt-4">
+                              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#111827] block mb-2">
+                                Especialidades & Atuação Técnica:
+                              </span>
+                              <ul className="space-y-1.5 text-xs text-[#4b5563]" aria-label="Especialidades jurídicas e fiduciárias">
+                                {featured.specialties.map((spec, idx) => (
+                                  <li key={idx} className="flex items-center gap-2">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-[#c5a880]" aria-hidden="true" />
+                                    <span>{spec}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+
+                          <div className="mt-6 border-t border-[#f0f0eb] pt-4 flex flex-wrap items-center justify-between gap-3">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedLawyer(featured)}
+                              className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#9e7d47] hover:text-[#6e532b] focus-visible:outline-2 focus-visible:outline-[#9e7d47] cursor-pointer"
+                              aria-label={`Conheça o perfil completo de ${featured.name}`}
+                            >
+                              <span>CONHEÇA O PERFIL</span>
+                              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                            </button>
+
+                            <a
+                              href="https://wa.me/5511973758834?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20o%20Dr.%20Victor%20Cartes."
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-[#717b8f] hover:text-[#111827] hover:underline cursor-pointer flex items-center gap-1 font-medium"
+                              aria-label={`Falar diretamente com ${featured.name}`}
+                            >
+                              <span>Plantão WhatsApp Direto</span>
+                              <span>→</span>
+                            </a>
+                          </div>
+
+                        </div>
+
+                      </div>
+                    </Card>
+                  </article>
+
+                </div>
+              </section>
+            );
+          })()}
 
           {/* 5. FOOTER / CTA SECTION (Dark Theme) — Private Banking Presence */}
           <section 
