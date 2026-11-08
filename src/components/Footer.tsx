@@ -294,6 +294,40 @@ export const Footer: React.FC<FooterProps> = ({
 
         </div>
 
+        {/* ================================================================== */}
+        {/* CRÉDITOS TÉCNICOS & ENGENHARIA / PRODUCT DESIGN CTO */}
+        {/* ================================================================== */}
+        <div className="mt-6 pt-4 border-t border-[#222938] flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-[#64748B]">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 text-center sm:text-left">
+            <span>Desenvolvimento & Inteligência Técnica:</span>
+            <a 
+              href="https://websolutions.eti.br/guilherme" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-[#DFCAAB] hover:text-white underline underline-offset-2 transition-colors font-medium"
+              title="Web Solutions ETI — Guilherme Puentes"
+            >
+              Web Solutions ETI
+            </a>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span>Product Design & CTO:</span>
+            <a 
+              href="https://www.linkedin.com/in/guilhermepuentes/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-[#DFCAAB] hover:text-white transition-colors font-medium hover:underline underline-offset-2"
+              title="LinkedIn do CTO Guilherme Puentes"
+            >
+              <svg className="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9h2.79v8.37H6.46v-8.37M7.86 6.82a1.62 1.62 0 1 0 0 3.24 1.62 1.62 0 0 0 0-3.24z"/>
+              </svg>
+              <span>Guilherme Puentes</span>
+            </a>
+          </div>
+        </div>
+
       </div>
     </footer>
   );
